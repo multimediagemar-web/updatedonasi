@@ -352,6 +352,10 @@ Namun, saat ini kita masih memiliki kewajiban pelunasan tahap akhir kepada pihak
                                 <input type="number" id="spending-order" class="w-full border border-slate-300 rounded-lg px-2 py-1.5 text-xs outline-none" required value="1">
                             </div>
                         </div>
+                        <div>
+                            <label class="block text-[10px] font-medium text-slate-500 mb-1">Link Foto Nota/Dokumentasi (Opsional)</label>
+                            <input type="url" id="spending-nota" class="w-full border border-slate-300 rounded-lg px-2 py-1.5 text-xs outline-none" placeholder="https://...">
+                        </div>
                         <button type="submit" id="btn-add-spending" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg text-xs font-bold mt-2 transition-colors">Tambah Item Biaya</button>
                     </form>
                 </div>
@@ -788,15 +792,23 @@ Namun, saat ini kita masih memiliki kewajiban pelunasan tahap akhir kepada pihak
                         const badgeClass = isLunas ? "bg-emerald-100 text-emerald-700" : "bg-orange-100 text-orange-700";
                         const statusText = isLunas ? "LUNAS" : "MENUNGGU<br>DANA";
 
+                        // Cek jika notaUrl tersedia, buat tombol Lihat Nota
+                        const notaHtml = item.notaUrl ? `<a href="${item.notaUrl}" target="_blank" class="mt-2 inline-flex items-center text-[10px] font-bold text-blue-600 bg-blue-50 hover:bg-blue-100 px-2.5 py-1.5 rounded-lg transition-colors border border-blue-100"><i class="fa-solid fa-file-invoice mr-1.5"></i> Lihat Nota / Bukti</a>` : '';
+
                         // Render untuk Halaman Publik
                         publicContainer.innerHTML += `
-                            <div class="flex items-center space-x-3">
-                                <div class="w-8 h-8 rounded-full ${circleClass} flex items-center justify-center font-bold text-xs flex-shrink-0">${index + 1}</div>
+                            <div class="flex items-start space-x-3 border-b border-slate-50 pb-4 mb-4 last:border-0 last:pb-0 last:mb-0">
+                                <div class="w-8 h-8 mt-0.5 rounded-full ${circleClass} flex items-center justify-center font-bold text-xs flex-shrink-0">${index + 1}</div>
                                 <div class="flex-grow">
-                                    <p class="text-sm font-bold ${titleClass}">${item.title}</p>
-                                    <p class="text-xs ${amountClass}">${formatRupiah(item.amount)}</p>
+                                    <div class="flex justify-between items-start">
+                                        <div>
+                                            <p class="text-sm font-bold ${titleClass}">${item.title}</p>
+                                            <p class="text-xs ${amountClass}">${formatRupiah(item.amount)}</p>
+                                        </div>
+                                        <span class="text-[10px] font-bold ${badgeClass} px-2 py-1 rounded text-center leading-tight ml-2 flex-shrink-0">${statusText}</span>
+                                    </div>
+                                    ${notaHtml}
                                 </div>
-                                <span class="text-[10px] font-bold ${badgeClass} px-2 py-1 rounded text-center leading-tight">${statusText}</span>
                             </div>
                         `;
 
@@ -970,7 +982,8 @@ Namun, saat ini kita masih memiliki kewajiban pelunasan tahap akhir kepada pihak
                         title: document.getElementById('spending-title').value,
                         amount: parseFloat(document.getElementById('spending-amount').value),
                         status: document.getElementById('spending-status').value,
-                        order: parseInt(document.getElementById('spending-order').value)
+                        order: parseInt(document.getElementById('spending-order').value),
+                        notaUrl: document.getElementById('spending-nota').value || null
                     });
                     showToast("Item rincian ditambahkan!");
                     
