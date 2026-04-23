@@ -191,6 +191,59 @@ Namun, saat ini kita masih memiliki kewajiban pelunasan tahap akhir kepada pihak
                     <p>Setelah mengisi form ini, Anda akan diarahkan ke WhatsApp untuk mengirim foto bukti transfer ke Admin.</p>
                 </div>
 
+                <!-- Bagian Informasi Rekening & QR Code -->
+                <div class="mb-6 bg-slate-50 border border-slate-200 rounded-2xl p-4">
+                    <h3 class="text-sm font-bold text-slate-800 mb-3 text-center border-b border-slate-200 pb-2">Rekening Resmi & QRIS Masjid</h3>
+                    
+                    <!-- QR Code -->
+                    <div class="flex justify-center mb-4">
+                        <img src="https://brdsg.com/img/1200/bq6rjfudbq7gvxva2d_1/LL5Sq7P7uVN20hXLL5JhiEAUwEOPMOQZufO9VDknlqVQ.webp" alt="QR Code Masjid Ashqaf" class="w-3/5 max-w-[180px] rounded-xl shadow-sm border border-slate-200 object-contain">
+                    </div>
+                    
+                    <!-- List Rekening -->
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-center bg-white p-2.5 rounded-xl border border-slate-100 shadow-sm">
+                            <div>
+                                <p class="text-[10px] text-slate-500 font-bold uppercase">BSI</p>
+                                <p class="text-sm font-bold text-slate-800 tracking-wider">5700870008</p>
+                            </div>
+                            <button type="button" onclick="copyToClipboard('5700870008')" class="text-emerald-600 bg-emerald-50 hover:bg-emerald-100 px-3 py-1.5 rounded-lg text-[10px] font-bold transition-colors"><i class="fa-regular fa-copy mr-1"></i> Salin</button>
+                        </div>
+                        
+                        <div class="flex justify-between items-center bg-white p-2.5 rounded-xl border border-slate-100 shadow-sm">
+                            <div>
+                                <p class="text-[10px] text-slate-500 font-bold uppercase">MUAMALAT</p>
+                                <p class="text-sm font-bold text-slate-800 tracking-wider">6210067149</p>
+                            </div>
+                            <button type="button" onclick="copyToClipboard('6210067149')" class="text-emerald-600 bg-emerald-50 hover:bg-emerald-100 px-3 py-1.5 rounded-lg text-[10px] font-bold transition-colors"><i class="fa-regular fa-copy mr-1"></i> Salin</button>
+                        </div>
+
+                        <div class="flex justify-between items-center bg-white p-2.5 rounded-xl border border-slate-100 shadow-sm">
+                            <div>
+                                <p class="text-[10px] text-slate-500 font-bold uppercase">BRI</p>
+                                <p class="text-sm font-bold text-slate-800 tracking-wider">007101002430561</p>
+                            </div>
+                            <button type="button" onclick="copyToClipboard('007101002430561')" class="text-emerald-600 bg-emerald-50 hover:bg-emerald-100 px-3 py-1.5 rounded-lg text-[10px] font-bold transition-colors"><i class="fa-regular fa-copy mr-1"></i> Salin</button>
+                        </div>
+
+                        <div class="flex justify-between items-center bg-white p-2.5 rounded-xl border border-slate-100 shadow-sm">
+                            <div>
+                                <p class="text-[10px] text-slate-500 font-bold uppercase">MANDIRI</p>
+                                <p class="text-sm font-bold text-slate-800 tracking-wider">1460016187580</p>
+                            </div>
+                            <button type="button" onclick="copyToClipboard('1460016187580')" class="text-emerald-600 bg-emerald-50 hover:bg-emerald-100 px-3 py-1.5 rounded-lg text-[10px] font-bold transition-colors"><i class="fa-regular fa-copy mr-1"></i> Salin</button>
+                        </div>
+
+                        <div class="flex justify-between items-center bg-white p-2.5 rounded-xl border border-slate-100 shadow-sm">
+                            <div>
+                                <p class="text-[10px] text-slate-500 font-bold uppercase">BNI</p>
+                                <p class="text-sm font-bold text-slate-800 tracking-wider">1853001835</p>
+                            </div>
+                            <button type="button" onclick="copyToClipboard('1853001835')" class="text-emerald-600 bg-emerald-50 hover:bg-emerald-100 px-3 py-1.5 rounded-lg text-[10px] font-bold transition-colors"><i class="fa-regular fa-copy mr-1"></i> Salin</button>
+                        </div>
+                    </div>
+                </div>
+
                 <form id="form-user-donasi" class="space-y-4">
                     <div>
                         <label class="block text-sm font-medium text-slate-600 mb-1">Nama Pewakif</label>
@@ -403,6 +456,16 @@ Namun, saat ini kita masih memiliki kewajiban pelunasan tahap akhir kepada pihak
                 toast.classList.add('-translate-y-10', 'opacity-0');
                 setTimeout(() => toast.remove(), 300);
             }, 3000);
+        }
+
+        function copyToClipboard(text) {
+            const el = document.createElement('textarea');
+            el.value = text;
+            document.body.appendChild(el);
+            el.select();
+            document.execCommand('copy');
+            document.body.removeChild(el);
+            showToast("Nomor rekening berhasil disalin!", "success");
         }
 
         function formatRupiah(amount) {
