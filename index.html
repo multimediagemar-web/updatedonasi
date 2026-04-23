@@ -55,30 +55,25 @@
     <!-- App Container (Mobile View Layout) -->
     <div class="app-container pb-24">
         
-        <!-- Header / Hero Section dengan Video -->
-        <header class="relative text-white pt-8 pb-16 px-5 overflow-hidden rounded-b-3xl bg-emerald-900">
-            <!-- Video Background -->
-            <!-- Ganti atribut 'src' di bawah dengan link video Anda (format .mp4) -->
-            <video autoplay loop muted playsinline class="absolute inset-0 w-full h-full object-cover z-0 mix-blend-overlay">
-                <source src="https://assets.mixkit.co/videos/preview/mixkit-mosque-with-its-minaret-under-a-clear-sky-22960-large.mp4" type="video/mp4">
-            </video>
-            
-            <!-- Gradient Overlay -->
-            <div class="absolute inset-0 video-overlay z-10"></div>
+        <!-- Header / Hero Section (Murni Foto) -->
+        <header class="w-full aspect-[4/3] sm:aspect-video relative overflow-hidden bg-slate-200">
+            <!-- Foto Background -->
+            <img id="header-image-element" src="https://images.unsplash.com/photo-1564859228273-274232fdb516?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="Banner Program" class="absolute inset-0 w-full h-full object-cover">
+        </header>
 
-            <div class="relative z-20">
-                <div class="inline-block bg-white/20 px-3 py-1 rounded-full text-xs font-medium mb-3 backdrop-blur-md border border-white/20">
+        <main class="px-5 pt-6 relative z-30 flex-grow">
+            
+            <!-- Title Section (Dipindah dari header) -->
+            <div class="mb-6">
+                <div class="inline-block bg-emerald-100 text-emerald-700 px-3 py-1.5 rounded-full text-[10px] font-bold mb-3 border border-emerald-200 uppercase tracking-wider">
                     <i class="fa-solid fa-circle-check mr-1"></i> Pelunasan Berjalan
                 </div>
-                <h1 class="text-2xl font-bold mb-2 leading-tight drop-shadow-md">Pelunasan Dinding Kaca Masjid Ashqaf</h1>
-                <p class="text-emerald-50 text-sm opacity-90 drop-shadow-md">
+                <h1 id="header-title-display" class="text-2xl font-extrabold text-slate-800 mb-2 leading-tight">Pelunasan Dinding Kaca Masjid Ashqaf</h1>
+                <p id="header-subtitle-display" class="text-slate-500 text-sm">
                     Transparansi donasi untuk rumah Allah.
                 </p>
             </div>
-        </header>
 
-        <main class="px-5 -mt-10 relative z-30 flex-grow">
-            
             <!-- Progress Card -->
             <div class="bg-white p-5 rounded-2xl shadow-lg border border-slate-100 mb-6">
                 <div class="flex justify-between items-end mb-2">
@@ -110,14 +105,10 @@
                 <h2 class="text-sm font-bold text-slate-800 mb-3 flex items-center gap-2">
                     <i class="fa-solid fa-circle-info text-emerald-600"></i> Tentang Program
                 </h2>
-                <div class="text-xs text-slate-600 leading-relaxed space-y-2 text-justify">
-                    <p>
-                        Alhamdulillah, tahap pemasangan dinding kaca Masjid Ashqaf telah selesai dikerjakan. Fasilitas ini sangat membantu menambah kenyamanan dan kekhusyukan ibadah para jamaah.
-                    </p>
-                    <p>
-                        Namun, saat ini kita masih memiliki kewajiban pelunasan tahap akhir kepada pihak vendor/kontraktor. Kami mengajak kaum muslimin untuk meraih amal jariyah dengan turut berpartisipasi melunasi fasilitas rumah Allah ini. Setiap rupiah yang Anda infaqkan insya Allah akan menjadi saksi kebaikan di akhirat kelak.
-                    </p>
-                </div>
+                <!-- Tambahan class whitespace-pre-line agar enter/baris baru dari database terbaca otomatis -->
+                <div id="program-description-display" class="text-xs text-slate-600 leading-relaxed whitespace-pre-line text-justify">Alhamdulillah, tahap pemasangan dinding kaca Masjid Ashqaf telah selesai dikerjakan. Fasilitas ini sangat membantu menambah kenyamanan dan kekhusyukan ibadah para jamaah.
+
+Namun, saat ini kita masih memiliki kewajiban pelunasan tahap akhir kepada pihak vendor/kontraktor. Kami mengajak kaum muslimin untuk meraih amal jariyah dengan turut berpartisipasi melunasi fasilitas rumah Allah ini. Setiap rupiah yang Anda infaqkan insya Allah akan menjadi saksi kebaikan di akhirat kelak.</div>
             </div>
 
             <!-- Tabs Navigation -->
@@ -153,34 +144,20 @@
 
             <!-- Spending List -->
             <div id="content-spending" class="tab-content hidden">
-                <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden mb-4">
-                    <div class="p-4 space-y-5">
-                        <div class="flex items-center space-x-3">
-                            <div class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center font-bold text-xs flex-shrink-0">1</div>
-                            <div class="flex-grow">
-                                <p class="text-sm font-bold">Uang Muka (DP 30%)</p>
-                                <p class="text-xs text-slate-500">Rp 45.000.000</p>
-                            </div>
-                            <span class="text-[10px] font-bold bg-emerald-100 text-emerald-700 px-2 py-1 rounded">LUNAS</span>
-                        </div>
-                        <div class="flex items-center space-x-3">
-                            <div class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center font-bold text-xs flex-shrink-0">2</div>
-                            <div class="flex-grow">
-                                <p class="text-sm font-bold">Termin 2 (Material)</p>
-                                <p class="text-xs text-slate-500">Rp 67.500.000</p>
-                            </div>
-                            <span class="text-[10px] font-bold bg-emerald-100 text-emerald-700 px-2 py-1 rounded">LUNAS</span>
-                        </div>
-                        <div class="flex items-center space-x-3">
-                            <div class="w-8 h-8 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center font-bold text-xs flex-shrink-0">3</div>
-                            <div class="flex-grow">
-                                <p class="text-sm font-bold text-orange-700">Pelunasan Akhir</p>
-                                <p class="text-xs font-bold text-orange-600" id="vendor-remaining">Rp 0</p>
-                            </div>
-                            <span class="text-[10px] font-bold bg-orange-100 text-orange-700 px-2 py-1 rounded text-center leading-tight">MENUNGGU<br>DANA</span>
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden mb-4 p-4">
+                    <div id="spending-list-container" class="space-y-5">
+                        <div class="text-center py-8 text-slate-500 text-sm">
+                            <i class="fa-solid fa-spinner fa-spin mr-2"></i> Memuat rincian biaya...
                         </div>
                     </div>
                 </div>
+            </div>
+
+            <!-- Footer Admin Access -->
+            <div class="mt-8 mb-4 text-center">
+                <button onclick="toggleAdminPanel()" class="text-xs text-slate-400 hover:text-emerald-600 transition-colors">
+                    <i class="fa-solid fa-lock"></i> Admin Akses
+                </button>
             </div>
 
         </main>
@@ -216,12 +193,8 @@
 
                 <form id="form-user-donasi" class="space-y-4">
                     <div>
-                        <label class="block text-sm font-medium text-slate-600 mb-1">Nama Lengkap / Hamba Allah</label>
+                        <label class="block text-sm font-medium text-slate-600 mb-1">Nama Pewakif</label>
                         <input type="text" id="user-nama" required class="w-full border border-slate-300 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-emerald-500 outline-none text-sm" placeholder="Masukkan nama">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-slate-600 mb-1">Nomor WhatsApp</label>
-                        <input type="tel" id="user-wa" required class="w-full border border-slate-300 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-emerald-500 outline-none text-sm" placeholder="Contoh: 08123456789">
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-slate-600 mb-1">Nominal Infaq (Rp)</label>
@@ -230,11 +203,12 @@
                     <div>
                         <label class="block text-sm font-medium text-slate-600 mb-1">Pesan / Doa (Opsional)</label>
                         <textarea id="user-doa" rows="2" class="w-full border border-slate-300 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-emerald-500 outline-none text-sm resize-none" placeholder="Tuliskan doa Anda..."></textarea>
+                        <p class="text-[10px] text-emerald-700 mt-1.5 italic bg-emerald-50 p-2 rounded-lg border border-emerald-100 leading-relaxed"><i class="fa-solid fa-hands-praying mr-1"></i> Doanya akan dibacakan setiap setelah sholat dan sebelum mengaji oleh santri penghafal al-quran yang berasrama di masjid ashqaf.</p>
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-slate-600 mb-1">Pilih Bukti Transfer</label>
                         <input type="file" id="user-bukti" accept="image/*" required class="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100">
-                        <p class="text-[10px] text-slate-400 mt-1">Pilih foto/screenshot. Foto asli akan dilampirkan via WhatsApp.</p>
+                        <p class="text-[10px] text-slate-400 mt-1.5 leading-relaxed">Pilih foto/screenshot. Foto asli akan dilampirkan via WhatsApp. Mengirim bukti transfer untuk pendataan dan memastikan wakaf Anda tersalurkan dengan benar.</p>
                     </div>
 
                     <div class="pt-4 pb-4">
@@ -243,6 +217,123 @@
                         </button>
                     </div>
                 </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Admin Panel -->
+    <div id="admin-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[60] hidden flex flex-col justify-end opacity-0 transition-opacity duration-300">
+        <div class="absolute inset-0" onclick="toggleAdminPanel()"></div>
+        <div class="bg-slate-50 w-full max-w-md mx-auto rounded-t-3xl relative transform translate-y-full transition-transform duration-300 flex flex-col h-[90vh]" id="admin-modal-content">
+            
+            <div class="p-4 border-b border-slate-200 flex justify-between items-center bg-white rounded-t-3xl shadow-sm z-10">
+                <h2 class="text-base font-bold text-slate-800"><i class="fa-solid fa-user-shield text-emerald-600 mr-2"></i> Admin Panel</h2>
+                <button onclick="toggleAdminPanel()" class="text-slate-400 hover:text-red-500 w-8 h-8 flex justify-center items-center rounded-full bg-slate-100"><i class="fa-solid fa-times"></i></button>
+            </div>
+            
+            <div class="flex-grow overflow-y-auto no-scrollbar p-5 space-y-6">
+                
+                <!-- Tab Konfirmasi Donasi Baru -->
+                <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100">
+                    <h3 class="font-bold text-sm text-slate-800 mb-3 flex justify-between items-center">
+                        <span>Menunggu Konfirmasi</span>
+                        <span class="bg-orange-100 text-orange-600 text-[10px] px-2 py-1 rounded-full" id="pending-count">0 Data</span>
+                    </h3>
+                    <div id="pending-list-container" class="space-y-3">
+                        <!-- Pending items here -->
+                    </div>
+                </div>
+
+                <!-- Update Progress Tab -->
+                <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100">
+                    <h3 class="font-bold text-sm text-slate-800 mb-3">Posting Kabar Terbaru</h3>
+                    <form id="form-add-update" class="space-y-3">
+                        <input type="text" id="update-title" placeholder="Judul Kabar" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none" required>
+                        <input type="date" id="update-date" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none" required>
+                        <input type="url" id="update-image-url" placeholder="Link Foto (Opsional)" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none">
+                        <textarea id="update-description" rows="3" placeholder="Deskripsi progres..." class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none resize-none" required></textarea>
+                        <button type="submit" id="btn-add-update" class="w-full bg-blue-600 text-white py-2 rounded-lg text-sm font-bold">Posting Kabar</button>
+                    </form>
+                </div>
+
+                 <!-- Update Dana Manual -->
+                 <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100">
+                    <h3 class="font-bold text-sm text-slate-800 mb-3">Ubah Ringkasan Dana (Progress)</h3>
+                    <form id="form-update-target" class="space-y-3">
+                        <div>
+                            <label class="block text-xs font-medium text-slate-500 mb-1">Target Total (Rp)</label>
+                            <input type="number" id="input-target-admin" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none" required>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-slate-500 mb-1">Dana Terkumpul (Rp)</label>
+                            <input type="number" id="input-collected-admin" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none" required>
+                        </div>
+                        <button type="submit" class="w-full bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-bold">Simpan Perubahan Dana</button>
+                    </form>
+                </div>
+
+                <!-- Manajemen Rincian Biaya -->
+                <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100">
+                    <h3 class="font-bold text-sm text-slate-800 mb-3 text-blue-700"><i class="fa-solid fa-file-invoice-dollar mr-1"></i> Rincian Biaya</h3>
+                    
+                    <!-- List in Admin -->
+                    <div id="admin-spending-list-container" class="space-y-2 mb-4 max-h-40 overflow-y-auto no-scrollbar border border-slate-100 p-2 rounded-lg bg-slate-50">
+                        <div class="text-center py-2 text-slate-400 text-[10px]">Memuat item...</div>
+                    </div>
+
+                    <!-- Form Add Spending -->
+                    <form id="form-add-spending" class="space-y-3 pt-2 border-t border-slate-200">
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <label class="block text-[10px] font-medium text-slate-500 mb-1">Nama Item</label>
+                                <input type="text" id="spending-title" class="w-full border border-slate-300 rounded-lg px-2 py-1.5 text-xs outline-none" required placeholder="Misal: Termin 1">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-medium text-slate-500 mb-1">Nominal (Rp)</label>
+                                <input type="number" id="spending-amount" class="w-full border border-slate-300 rounded-lg px-2 py-1.5 text-xs outline-none" required>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <label class="block text-[10px] font-medium text-slate-500 mb-1">Status</label>
+                                <select id="spending-status" class="w-full border border-slate-300 rounded-lg px-2 py-1.5 text-xs outline-none bg-white">
+                                    <option value="lunas">LUNAS</option>
+                                    <option value="menunggu">MENUNGGU DANA</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-medium text-slate-500 mb-1">Urutan (Angka)</label>
+                                <input type="number" id="spending-order" class="w-full border border-slate-300 rounded-lg px-2 py-1.5 text-xs outline-none" required value="1">
+                            </div>
+                        </div>
+                        <button type="submit" id="btn-add-spending" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg text-xs font-bold mt-2 transition-colors">Tambah Item Biaya</button>
+                    </form>
+                </div>
+
+                <!-- Pengaturan Tampilan Website -->
+                <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100">
+                    <h3 class="font-bold text-sm text-slate-800 mb-3 text-purple-700"><i class="fa-solid fa-palette mr-1"></i> Ubah Tampilan Website</h3>
+                    <form id="form-update-settings" class="space-y-3">
+                        <div>
+                            <label class="block text-xs font-medium text-slate-500 mb-1">Judul Utama (Header)</label>
+                            <input type="text" id="input-header-title" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none" required>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-slate-500 mb-1">Sub-judul (Header)</label>
+                            <input type="text" id="input-header-subtitle" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none" required>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-slate-500 mb-1">Link Foto Latar (JPG/PNG URL)</label>
+                            <input type="url" id="input-header-image" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none" required>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-slate-500 mb-1">Tentang Program (Deskripsi)</label>
+                            <textarea id="input-program-desc" rows="6" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none resize-none" required></textarea>
+                        </div>
+                        <button type="submit" class="w-full bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg text-sm font-bold transition-colors">Simpan Tampilan</button>
+                    </form>
+                </div>
+
             </div>
         </div>
     </div>
@@ -268,6 +359,23 @@
             const modal = document.getElementById('donasi-modal');
             const content = document.getElementById('donasi-modal-content');
             if (modal.classList.contains('hidden')) {
+                modal.classList.remove('hidden');
+                setTimeout(() => {
+                    modal.classList.remove('opacity-0');
+                    content.classList.remove('translate-y-full');
+                }, 10);
+            } else {
+                modal.classList.add('opacity-0');
+                content.classList.add('translate-y-full');
+                setTimeout(() => modal.classList.add('hidden'), 300);
+            }
+        }
+
+        function toggleAdminPanel() {
+            const modal = document.getElementById('admin-modal');
+            const content = document.getElementById('admin-modal-content');
+            if (modal.classList.contains('hidden')) {
+                document.getElementById('update-date').valueAsDate = new Date();
                 modal.classList.remove('hidden');
                 setTimeout(() => {
                     modal.classList.remove('opacity-0');
@@ -311,7 +419,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInWithCustomToken, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, setDoc, getDoc, collection, onSnapshot, addDoc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, doc, setDoc, getDoc, collection, onSnapshot, addDoc, updateDoc, deleteDoc, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         let app, auth, db, appId;
         const ADMIN_WA = "628115621415"; // Nomor WA Admin
@@ -341,6 +449,7 @@
         const campaignRef = doc(db, 'artifacts', appId, 'public', 'data', 'campaign_info', 'main');
         const donorsColRef = collection(db, 'artifacts', appId, 'public', 'data', 'donors');
         const updatesColRef = collection(db, 'artifacts', appId, 'public', 'data', 'updates');
+        const spendingColRef = collection(db, 'artifacts', appId, 'public', 'data', 'spending');
 
         async function initAuth() {
             try {
@@ -363,6 +472,15 @@
                     await addDoc(donorsColRef, { name: "Hamba Allah", amount: 5000000, date: new Date().toISOString(), message: "Bismillah", status: "approved" });
                     await updateCampaignTotal(5000000);
                 }
+
+                // Cek dan isi data awal untuk Rincian Biaya jika masih kosong
+                const spendingSnap = await getDocs(spendingColRef);
+                if(spendingSnap.empty) {
+                    await addDoc(spendingColRef, { title: "Uang Muka (DP 30%)", amount: 45000000, status: "lunas", order: 1 });
+                    await addDoc(spendingColRef, { title: "Termin 2 (Material)", amount: 67500000, status: "lunas", order: 2 });
+                    await addDoc(spendingColRef, { title: "Pelunasan Akhir", amount: 37500000, status: "menunggu", order: 3 });
+                }
+
             } catch (e) {}
         }
 
@@ -391,10 +509,55 @@
                     document.getElementById('target-amount').innerText = formatRupiah(data.target);
                     document.getElementById('collected-amount').innerText = formatRupiah(data.collected);
                     document.getElementById('remaining-amount').innerText = formatRupiah(Math.max(0, remaining));
-                    document.getElementById('vendor-remaining').innerText = formatRupiah(Math.max(0, remaining));
+                    
+                    if (document.getElementById('vendor-remaining')) {
+                        document.getElementById('vendor-remaining').innerText = formatRupiah(Math.max(0, remaining));
+                    }
+                    
                     document.getElementById('percent-text').innerText = Math.round(percentage) + '%';
                     document.getElementById('progress-bar').style.width = percentage + '%';
                     
+                    // --- UPDATE TAMPILAN DINAMIS ---
+                    // Cek jika data tampilan ada di Firebase, jika ada tampilkan. Jika tidak, pakai yang di HTML.
+                    if (data.headerTitle) {
+                        document.getElementById('header-title-display').innerText = data.headerTitle;
+                        if(document.getElementById('input-header-title')) document.getElementById('input-header-title').value = data.headerTitle;
+                    } else {
+                        if(document.getElementById('input-header-title')) document.getElementById('input-header-title').value = document.getElementById('header-title-display').innerText;
+                    }
+
+                    if (data.headerSubtitle) {
+                        document.getElementById('header-subtitle-display').innerText = data.headerSubtitle;
+                        if(document.getElementById('input-header-subtitle')) document.getElementById('input-header-subtitle').value = data.headerSubtitle;
+                    } else {
+                        if(document.getElementById('input-header-subtitle')) document.getElementById('input-header-subtitle').value = document.getElementById('header-subtitle-display').innerText.trim();
+                    }
+
+                    if (data.headerImageUrl || data.headerVideoUrl) {
+                        const imgElement = document.getElementById('header-image-element');
+                        const urlToUse = data.headerImageUrl || data.headerVideoUrl; // Menampilkan URL foto, atau fallback jika masih pakai URL video lama
+                        if (imgElement.src !== urlToUse) {
+                            imgElement.src = urlToUse;
+                        }
+                        if(document.getElementById('input-header-image')) document.getElementById('input-header-image').value = urlToUse;
+                    } else {
+                        if(document.getElementById('input-header-image')) document.getElementById('input-header-image').value = document.getElementById('header-image-element').src;
+                    }
+
+                    if (data.programDescription) {
+                        document.getElementById('program-description-display').innerText = data.programDescription;
+                        if(document.getElementById('input-program-desc')) document.getElementById('input-program-desc').value = data.programDescription;
+                    } else {
+                        if(document.getElementById('input-program-desc')) document.getElementById('input-program-desc').value = document.getElementById('program-description-display').innerText;
+                    }
+                    // --- END UPDATE TAMPILAN ---
+
+                    // Isi form admin dana jika elemennya ada
+                    if(document.getElementById('input-target-admin')) {
+                        document.getElementById('input-target-admin').value = data.target;
+                        document.getElementById('input-collected-admin').value = data.collected;
+                    }
+
                     if(data.lastUpdate) {
                         document.getElementById('last-update-text').innerText = 'Update: ' + formatDate(data.lastUpdate);
                     }
@@ -417,6 +580,7 @@
                 allDonors.sort((a, b) => new Date(b.date) - new Date(a.date));
 
                 const approvedDonors = allDonors.filter(d => d.status === 'approved');
+                const pendingDonors = allDonors.filter(d => d.status === 'pending');
 
                 // Render Public Donors
                 const publicContainer = document.getElementById('donors-list-container');
@@ -441,6 +605,61 @@
                         `;
                     });
                 }
+
+                // Render Admin Pending Donors
+                const pendingContainer = document.getElementById('pending-list-container');
+                if(pendingContainer) {
+                    document.getElementById('pending-count').innerText = `${pendingDonors.length} Data`;
+                    pendingContainer.innerHTML = '';
+                    
+                    if(pendingDonors.length === 0) {
+                        pendingContainer.innerHTML = `<p class="text-xs text-slate-400 text-center py-4">Tidak ada data pending.</p>`;
+                    } else {
+                        pendingDonors.forEach(donor => {
+                            pendingContainer.innerHTML += `
+                                <div class="bg-orange-50 border border-orange-100 p-3 rounded-xl">
+                                    <div class="flex justify-between items-start mb-2">
+                                        <div>
+                                            <p class="text-sm font-bold text-slate-800">${donor.name}</p>
+                                            <p class="text-[10px] text-slate-500"><i class="fa-brands fa-whatsapp text-green-500"></i> ${donor.wa || '-'}</p>
+                                        </div>
+                                        <p class="text-sm font-bold text-orange-600">${formatRupiah(donor.amount)}</p>
+                                    </div>
+                                    ${donor.message ? `<p class="text-[10px] text-slate-600 italic mb-2">"${donor.message}"</p>` : ''}
+                                    <div class="flex gap-2 mt-2">
+                                        <button class="flex-1 bg-emerald-500 text-white text-xs font-bold py-1.5 rounded admin-approve-btn" data-id="${donor.id}" data-amount="${donor.amount}">Setujui</button>
+                                        <button class="flex-1 bg-red-100 text-red-600 text-xs font-bold py-1.5 rounded admin-reject-btn" data-id="${donor.id}">Tolak/Hapus</button>
+                                    </div>
+                                </div>
+                            `;
+                        });
+
+                        // Attach events for admin buttons
+                        document.querySelectorAll('.admin-approve-btn').forEach(btn => {
+                            btn.addEventListener('click', async (e) => {
+                                const id = e.currentTarget.getAttribute('data-id');
+                                const amount = parseFloat(e.currentTarget.getAttribute('data-amount'));
+                                try {
+                                    await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'donors', id), { status: 'approved' });
+                                    await updateCampaignTotal(amount);
+                                    showToast("Donasi disetujui!");
+                                } catch (err) { showToast("Gagal menyetujui", "error"); }
+                            });
+                        });
+
+                        document.querySelectorAll('.admin-reject-btn').forEach(btn => {
+                            btn.addEventListener('click', async (e) => {
+                                if(confirm("Tolak dan hapus data donasi ini?")) {
+                                    const id = e.currentTarget.getAttribute('data-id');
+                                    try {
+                                        await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'donors', id));
+                                        showToast("Data ditolak/dihapus.");
+                                    } catch (err) { showToast("Gagal menghapus", "error"); }
+                                }
+                            });
+                        });
+                    }
+                }
             }, (e) => console.error(e));
 
             // 3. Updates Listener
@@ -454,11 +673,12 @@
                 if(updates.length === 0) timeline.innerHTML = `<div class="text-center py-8 text-slate-500 text-sm ml-[-12px]">Belum ada kabar terbaru.</div>`;
 
                 updates.forEach(update => {
-                    const imgHtml = update.imageUrl ? `<img src="${update.imageUrl}" class="w-full h-40 object-cover rounded-lg mb-2 border border-slate-200">` : '';
+                    const imgHtml = update.imageUrl ? `<img src="${update.imageUrl}" class="w-full aspect-[4/5] object-cover rounded-lg mb-2 border border-slate-200">` : '';
                     timeline.innerHTML += `
                         <div class="relative ml-6">
                             <div class="absolute w-3 h-3 bg-emerald-500 rounded-full -left-[31px] top-1 border-2 border-white"></div>
                             <div class="bg-white p-4 rounded-xl border border-slate-100 shadow-sm relative">
+                                <button class="absolute top-2 right-2 text-red-300 hover:text-red-500 admin-delete-update-btn hidden" data-id="${update.id}"><i class="fa-solid fa-trash text-xs"></i></button>
                                 <p class="text-[10px] font-bold text-emerald-600 mb-1">${formatDate(update.date)}</p>
                                 <h4 class="font-bold text-sm text-slate-800 mb-2">${update.title}</h4>
                                 ${imgHtml}
@@ -467,6 +687,99 @@
                         </div>
                     `;
                 });
+
+                // Attach event for admin to delete updates
+                document.querySelectorAll('.admin-delete-update-btn').forEach(btn => {
+                    btn.classList.remove('hidden');
+                    btn.addEventListener('click', async (e) => {
+                        const id = e.currentTarget.getAttribute('data-id');
+                        if(confirm("Hapus kabar terbaru ini?")) {
+                            try {
+                                await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'updates', id));
+                                showToast("Kabar berhasil dihapus");
+                            } catch(err) {
+                                showToast("Gagal menghapus", "error");
+                            }
+                        }
+                    });
+                });
+            }, (e) => console.error(e));
+
+            // 4. Spending Listener
+            onSnapshot(spendingColRef, (snapshot) => {
+                const spendingItems = [];
+                snapshot.forEach(doc => spendingItems.push({ id: doc.id, ...doc.data() }));
+                // Urutkan berdasarkan kolom "order" (angka)
+                spendingItems.sort((a, b) => a.order - b.order); 
+
+                const publicContainer = document.getElementById('spending-list-container');
+                const adminContainer = document.getElementById('admin-spending-list-container');
+
+                publicContainer.innerHTML = '';
+                if(adminContainer) adminContainer.innerHTML = '';
+
+                if (spendingItems.length === 0) {
+                    publicContainer.innerHTML = `<div class="text-center py-4 text-slate-500 text-sm">Belum ada rincian biaya.</div>`;
+                    if(adminContainer) adminContainer.innerHTML = `<div class="text-center py-2 text-slate-400 text-[10px]">Belum ada item.</div>`;
+                } else {
+                    spendingItems.forEach((item, index) => {
+                        const isLunas = item.status === 'lunas';
+                        
+                        // Konfigurasi Warna Tailwind
+                        const circleClass = isLunas ? "bg-emerald-100 text-emerald-600" : "bg-orange-100 text-orange-600";
+                        const titleClass = isLunas ? "text-slate-800" : "text-orange-700";
+                        const amountClass = isLunas ? "text-slate-500 font-normal" : "text-orange-600 font-bold";
+                        const badgeClass = isLunas ? "bg-emerald-100 text-emerald-700" : "bg-orange-100 text-orange-700";
+                        const statusText = isLunas ? "LUNAS" : "MENUNGGU<br>DANA";
+
+                        // Render untuk Halaman Publik
+                        publicContainer.innerHTML += `
+                            <div class="flex items-center space-x-3">
+                                <div class="w-8 h-8 rounded-full ${circleClass} flex items-center justify-center font-bold text-xs flex-shrink-0">${index + 1}</div>
+                                <div class="flex-grow">
+                                    <p class="text-sm font-bold ${titleClass}">${item.title}</p>
+                                    <p class="text-xs ${amountClass}">${formatRupiah(item.amount)}</p>
+                                </div>
+                                <span class="text-[10px] font-bold ${badgeClass} px-2 py-1 rounded text-center leading-tight">${statusText}</span>
+                            </div>
+                        `;
+
+                        // Render untuk Panel Admin
+                        if(adminContainer) {
+                            const badgeAdminClass = isLunas ? "bg-emerald-100 text-emerald-700" : "bg-orange-100 text-orange-700";
+                            adminContainer.innerHTML += `
+                                <div class="flex justify-between items-center bg-white p-2 border border-slate-200 rounded-lg text-xs shadow-sm">
+                                    <div>
+                                        <span class="font-bold text-slate-700">${item.order}. ${item.title}</span> 
+                                        <span class="text-slate-500 ml-1">- ${formatRupiah(item.amount)}</span>
+                                        <span class="ml-2 text-[8px] px-1.5 py-0.5 font-bold ${badgeAdminClass} rounded">${item.status.toUpperCase()}</span>
+                                    </div>
+                                    <button class="text-slate-300 hover:text-red-500 admin-delete-spending-btn transition-colors p-1" data-id="${item.id}">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </button>
+                                </div>
+                            `;
+                        }
+                    });
+
+                    // Event Listener untuk Tombol Hapus di Admin
+                    if(adminContainer) {
+                        document.querySelectorAll('.admin-delete-spending-btn').forEach(btn => {
+                            btn.addEventListener('click', async (e) => {
+                                const targetBtn = e.target.closest('button');
+                                const id = targetBtn.getAttribute('data-id');
+                                if(confirm("Hapus item rincian biaya ini?")) {
+                                    try {
+                                        await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'spending', id));
+                                        showToast("Item berhasil dihapus");
+                                    } catch(err) {
+                                        showToast("Gagal menghapus", "error");
+                                    }
+                                }
+                            });
+                        });
+                    }
+                }
             }, (e) => console.error(e));
         }
 
@@ -478,7 +791,6 @@
             btn.disabled = true;
 
             const name = document.getElementById('user-nama').value;
-            const wa = document.getElementById('user-wa').value;
             const amount = parseFloat(document.getElementById('user-nominal').value);
             const message = document.getElementById('user-doa').value;
             // File input logic: Since direct upload to Firebase requires Storage setup, 
@@ -488,7 +800,7 @@
                 // 1. Save as Pending
                 await addDoc(donorsColRef, {
                     name: name,
-                    wa: wa,
+                    wa: "-", // Fallback karena input WA dihilangkan
                     amount: amount,
                     message: message,
                     date: new Date().toISOString(),
@@ -516,6 +828,108 @@
                 btn.disabled = false;
             }
         });
+
+        // Handle Admin Target Update
+        if(document.getElementById('form-update-target')) {
+            document.getElementById('form-update-target').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const btn = e.target.querySelector('button');
+                btn.innerText = 'Menyimpan...'; btn.disabled = true;
+
+                const target = parseFloat(document.getElementById('input-target-admin').value);
+                const collected = parseFloat(document.getElementById('input-collected-admin').value);
+                
+                try {
+                    await setDoc(campaignRef, { 
+                        target: target,
+                        collected: collected,
+                        lastUpdate: new Date().toISOString()
+                    }, { merge: true });
+                    showToast("Ringkasan dana diperbarui!");
+                } catch(error) {
+                    showToast("Gagal memperbarui dana", "error");
+                } finally {
+                    btn.innerText = 'Simpan Perubahan Dana'; btn.disabled = false;
+                }
+            });
+        }
+
+        // Handle Admin Settings (Tampilan) Update
+        if(document.getElementById('form-update-settings')) {
+            document.getElementById('form-update-settings').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const btn = e.target.querySelector('button');
+                btn.innerText = 'Menyimpan Tampilan...'; btn.disabled = true;
+
+                try {
+                    await setDoc(campaignRef, { 
+                        headerTitle: document.getElementById('input-header-title').value,
+                        headerSubtitle: document.getElementById('input-header-subtitle').value,
+                        headerImageUrl: document.getElementById('input-header-image').value,
+                        programDescription: document.getElementById('input-program-desc').value,
+                        lastUpdate: new Date().toISOString()
+                    }, { merge: true });
+                    
+                    showToast("Tampilan website berhasil diubah!");
+                } catch (error) { 
+                    console.error("Gagal simpan tampilan:", error);
+                    showToast("Gagal merubah tampilan", "error"); 
+                } finally { 
+                    btn.innerText = 'Simpan Tampilan'; btn.disabled = false; 
+                }
+            });
+        }
+
+        // Handle Admin Post Update
+        if(document.getElementById('form-add-update')) {
+            document.getElementById('form-add-update').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const btn = document.getElementById('btn-add-update');
+                btn.innerText = 'Memposting...'; btn.disabled = true;
+
+                try {
+                    await addDoc(updatesColRef, {
+                        title: document.getElementById('update-title').value,
+                        date: document.getElementById('update-date').value,
+                        description: document.getElementById('update-description').value,
+                        imageUrl: document.getElementById('update-image-url').value || null
+                    });
+                    showToast("Kabar diposting!");
+                    e.target.reset();
+                    document.getElementById('update-date').valueAsDate = new Date();
+                } catch (error) { showToast("Gagal posting", "error"); }
+                finally { btn.innerText = 'Posting Kabar'; btn.disabled = false; }
+            });
+        }
+
+        // Handle Admin Add Spending
+        if(document.getElementById('form-add-spending')) {
+            document.getElementById('form-add-spending').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const btn = document.getElementById('btn-add-spending');
+                btn.innerText = 'Menyimpan...'; btn.disabled = true;
+
+                try {
+                    await addDoc(spendingColRef, {
+                        title: document.getElementById('spending-title').value,
+                        amount: parseFloat(document.getElementById('spending-amount').value),
+                        status: document.getElementById('spending-status').value,
+                        order: parseInt(document.getElementById('spending-order').value)
+                    });
+                    showToast("Item rincian ditambahkan!");
+                    
+                    // Reset form tapi naikkan urutan angkanya otomatis
+                    const currentOrder = parseInt(document.getElementById('spending-order').value) || 1;
+                    e.target.reset();
+                    document.getElementById('spending-order').value = currentOrder + 1;
+                    
+                } catch (error) { 
+                    showToast("Gagal menambah", "error"); 
+                } finally { 
+                    btn.innerText = 'Tambah Item Biaya'; btn.disabled = false; 
+                }
+            });
+        }
 
         // Start 
         if (app) initAuth();
