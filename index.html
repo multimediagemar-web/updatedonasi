@@ -95,7 +95,7 @@
                     </div>
                 </div>
                 <div class="mt-4 bg-orange-50 p-3 rounded-xl border border-orange-100 flex justify-between items-center">
-                    <span class="text-xs font-bold text-orange-800">Sisa Hutang:</span>
+                    <span class="text-xs font-bold text-orange-800">Sisa Pembayaran:</span>
                     <span class="text-sm font-bold text-orange-600" id="remaining-amount">Rp 0</span>
                 </div>
             </div>
@@ -197,11 +197,6 @@ Namun, saat ini kita masih memiliki kewajiban pelunasan tahap akhir kepada pihak
                         <label class="block text-sm font-medium text-slate-600 mb-1">Pesan / Doa (Opsional)</label>
                         <textarea id="user-doa" rows="2" class="w-full border border-slate-300 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-emerald-500 outline-none text-sm resize-none" placeholder="Tuliskan doa Anda..."></textarea>
                         <p class="text-[10px] text-emerald-700 mt-1.5 italic bg-emerald-50 p-2 rounded-lg border border-emerald-100 leading-relaxed"><i class="fa-solid fa-hands-praying mr-1"></i> Doanya akan dibacakan setiap setelah sholat dan sebelum mengaji oleh santri penghafal al-quran yang berasrama di masjid ashqaf.</p>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-slate-600 mb-1">Pilih Bukti Transfer</label>
-                        <input type="file" id="user-bukti" accept="image/*" required class="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100">
-                        <p class="text-[10px] text-slate-400 mt-1.5 leading-relaxed">Pilih foto/screenshot. Foto asli akan dilampirkan via WhatsApp. Mengirim bukti transfer untuk pendataan dan memastikan wakaf Anda tersalurkan dengan benar.</p>
                     </div>
 
                     <!-- Bagian Informasi Rekening & QR Code (Dipindah ke sini) -->
@@ -722,12 +717,11 @@ Namun, saat ini kita masih memiliki kewajiban pelunasan tahap akhir kepada pihak
                 if(updates.length === 0) timeline.innerHTML = `<div class="text-center py-8 text-slate-500 text-sm ml-[-12px]">Belum ada kabar terbaru.</div>`;
 
                 updates.forEach(update => {
-                    const imgHtml = update.imageUrl ? `<img src="${update.imageUrl}" class="w-full aspect-[4/5] object-cover rounded-lg mb-2 border border-slate-200">` : '';
+                    const imgHtml = update.imageUrl ? `<img src="${update.imageUrl}" class="w-full h-auto rounded-lg mb-2 border border-slate-200">` : '';
                     timeline.innerHTML += `
                         <div class="relative ml-6">
                             <div class="absolute w-3 h-3 bg-emerald-500 rounded-full -left-[31px] top-1 border-2 border-white"></div>
                             <div class="bg-white p-4 rounded-xl border border-slate-100 shadow-sm relative">
-                                <button class="absolute top-2 right-2 text-red-300 hover:text-red-500 admin-delete-update-btn hidden" data-id="${update.id}"><i class="fa-solid fa-trash text-xs"></i></button>
                                 <p class="text-[10px] font-bold text-emerald-600 mb-1">${formatDate(update.date)}</p>
                                 <h4 class="font-bold text-sm text-slate-800 mb-2">${update.title}</h4>
                                 ${imgHtml}
@@ -735,22 +729,6 @@ Namun, saat ini kita masih memiliki kewajiban pelunasan tahap akhir kepada pihak
                             </div>
                         </div>
                     `;
-                });
-
-                // Attach event for admin to delete updates
-                document.querySelectorAll('.admin-delete-update-btn').forEach(btn => {
-                    btn.classList.remove('hidden');
-                    btn.addEventListener('click', async (e) => {
-                        const id = e.currentTarget.getAttribute('data-id');
-                        if(confirm("Hapus kabar terbaru ini?")) {
-                            try {
-                                await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'updates', id));
-                                showToast("Kabar berhasil dihapus");
-                            } catch(err) {
-                                showToast("Gagal menghapus", "error");
-                            }
-                        }
-                    });
                 });
             }, (e) => console.error(e));
 
