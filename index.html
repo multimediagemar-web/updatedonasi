@@ -527,20 +527,9 @@ Namun, saat ini kita masih memiliki kewajiban pelunasan tahap akhir kepada pihak
             try {
                 const docSnap = await getDoc(campaignRef);
                 if (!docSnap.exists()) {
+                    // Hanya membuat kerangka target dan capaian awal, tidak ada data dummy (0)
                     await setDoc(campaignRef, { target: 150000000, collected: 0, lastUpdate: new Date().toISOString() });
-                    // Seed initial data
-                    await addDoc(donorsColRef, { name: "Hamba Allah", amount: 5000000, date: new Date().toISOString(), message: "Bismillah", status: "approved" });
-                    await updateCampaignTotal(5000000);
                 }
-
-                // Cek dan isi data awal untuk Rincian Biaya jika masih kosong
-                const spendingSnap = await getDocs(spendingColRef);
-                if(spendingSnap.empty) {
-                    await addDoc(spendingColRef, { title: "Uang Muka (DP 30%)", amount: 45000000, status: "lunas", order: 1 });
-                    await addDoc(spendingColRef, { title: "Termin 2 (Material)", amount: 67500000, status: "lunas", order: 2 });
-                    await addDoc(spendingColRef, { title: "Pelunasan Akhir", amount: 37500000, status: "menunggu", order: 3 });
-                }
-
             } catch (e) {}
         }
 
@@ -834,8 +823,7 @@ Namun, saat ini kita masih memiliki kewajiban pelunasan tahap akhir kepada pihak
                     if(adminContainer) {
                         document.querySelectorAll('.admin-delete-spending-btn').forEach(btn => {
                             btn.addEventListener('click', async (e) => {
-                                const targetBtn = e.target.closest('button');
-                                const id = targetBtn.getAttribute('data-id');
+                                const id = e.currentTarget.getAttribute('data-id');
                                 if(confirm("Hapus item rincian biaya ini?")) {
                                     try {
                                         await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'spending', id));
