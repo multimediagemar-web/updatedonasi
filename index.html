@@ -126,6 +126,14 @@ Namun, saat ini kita masih memiliki kewajiban pelunasan tahap akhir kepada pihak
 
             <!-- Donors List -->
             <div id="content-donors" class="tab-content">
+                <!-- Kolom Pencarian -->
+                <div class="mb-3 relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <i class="fa-solid fa-magnifying-glass text-slate-400 text-sm"></i>
+                    </div>
+                    <input type="text" id="search-donor" class="w-full border border-slate-200 rounded-xl pl-9 pr-4 py-2.5 text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-shadow bg-slate-50" placeholder="Cari nama pewakif...">
+                </div>
+
                 <div class="space-y-3 max-h-[400px] overflow-y-auto no-scrollbar pb-6" id="donors-list-container">
                     <div class="text-center py-8 text-slate-500 text-sm">
                         <i class="fa-solid fa-spinner fa-spin mr-2"></i> Memuat data...
@@ -475,14 +483,18 @@ Namun, saat ini kita masih memiliki kewajiban pelunasan tahap akhir kepada pihak
     <!-- Firebase Logic -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInWithCustomToken, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, setDoc, getDoc, collection, onSnapshot, addDoc, updateDoc, deleteDoc, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        // Kunci Perbaikan: Menambahkan query, where, arrayUnion ke import
+        import { getFirestore, doc, setDoc, getDoc, collection, onSnapshot, addDoc, updateDoc, deleteDoc, getDocs, query, where, arrayUnion } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         let app, auth, db, appId;
-        const ADMIN_WA = "628115621415"; // Nomor WA Admin
+        let globalApprovedDonors = []; // Menyimpan indeks nama donatur
+        let currentPendingDonors = []; // Menyimpan data pending untuk admin
+        let publicDonorsLimit = 50; // Batas tampil awal
+
+        const ADMIN_WA = "628115621415"; 
         
         try {
-            // Menggunakan konfigurasi Firebase Anda
             const firebaseConfig = {
                 apiKey: "AIzaSyBHTiKq_I2G5rnGSiQdKT47mIUfdoVYRLI",
                 authDomain: "updatedonasidindingmasjid.firebaseapp.com",
@@ -495,23 +507,25 @@ Namun, saat ini kita masih memiliki kewajiban pelunasan tahap akhir kepada pihak
             auth = getAuth(app);
             db = getFirestore(app);
             
-            // KUNCI PERBAIKAN SINKRONISASI: 
-            // Kita kunci ID database menjadi nama permanen. Sebelumnya ID ini berubah-ubah 
-            // tergantung dari mana website ini dibuka, sehingga datanya terpisah-pisah.
             appId = 'masjid-ashqaf-production-v1'; 
         } catch (error) {
             console.error("Firebase Init Error:", error);
         }
 
         const campaignRef = doc(db, 'artifacts', appId, 'public', 'data', 'campaign_info', 'main');
+        const donorsIndexRef = doc(db, 'artifacts', appId, 'public', 'data', 'campaign_info', 'donors_index'); // Dokumen Katalog Indeks
         const donorsColRef = collection(db, 'artifacts', appId, 'public', 'data', 'donors');
         const updatesColRef = collection(db, 'artifacts', appId, 'public', 'data', 'updates');
         const spendingColRef = collection(db, 'artifacts', appId, 'public', 'data', 'spending');
 
+        // Fungsi Load More yang bisa dipanggil dari HTML
+        window.loadMoreDonors = function() {
+            publicDonorsLimit += 50;
+            applyDonorFilterAndRender();
+        };
+
         async function initAuth() {
             try {
-                // Menggunakan SignInAnonymously langsung karena Anda menggunakan Firebase Config milik sendiri.
-                // Token bawaan (__initial_auth_token) hanya berlaku untuk config default.
                 await signInAnonymously(auth);
                 setupListeners();
                 checkAndSeedData();
@@ -524,13 +538,25 @@ Namun, saat ini kita masih memiliki kewajiban pelunasan tahap akhir kepada pihak
             try {
                 const docSnap = await getDoc(campaignRef);
                 if (!docSnap.exists()) {
-                    // Hanya membuat kerangka target dan capaian awal, tidak ada data dummy (0)
                     await setDoc(campaignRef, { target: 150000000, collected: 0, lastUpdate: new Date().toISOString() });
                 }
-            } catch (e) {}
+
+                // Migrasi Otomatis: Membuat Katalog Indeks dari data donatur yang sudah ada sebelumnya
+                const indexSnap = await getDoc(donorsIndexRef);
+                if (!indexSnap.exists()) {
+                    const allDonorsSnap = await getDocs(donorsColRef);
+                    const approvedList = [];
+                    allDonorsSnap.forEach(d => {
+                        const data = d.data();
+                        if(data.status === 'approved') {
+                            approvedList.push({ id: d.id, name: data.name, amount: data.amount, date: data.date });
+                        }
+                    });
+                    await setDoc(donorsIndexRef, { list: approvedList });
+                }
+            } catch (e) { console.error(e); }
         }
 
-        // Helper to update total safely
         async function updateCampaignTotal(amountToAdd) {
             try {
                 const snap = await getDoc(campaignRef);
@@ -542,6 +568,58 @@ Namun, saat ini kita masih memiliki kewajiban pelunasan tahap akhir kepada pihak
                     });
                 }
             } catch (error) { console.error("Update total error", error); }
+        }
+
+        // Fungsi penyaring dan pembatas (Limit)
+        function applyDonorFilterAndRender() {
+            const searchTerm = document.getElementById('search-donor').value.toLowerCase();
+            let filtered = globalApprovedDonors;
+            
+            // Filter dari seluruh Katalog Indeks
+            if (searchTerm) {
+                filtered = globalApprovedDonors.filter(donor => donor.name.toLowerCase().includes(searchTerm));
+            }
+            
+            // Batasi jumlah yang dirender di layar (Solusi 2)
+            const sliced = filtered.slice(0, publicDonorsLimit);
+            const hasMore = filtered.length > publicDonorsLimit;
+            
+            renderPublicDonors(sliced, hasMore);
+        }
+
+        function renderPublicDonors(donorsToRender, hasMore) {
+            const publicContainer = document.getElementById('donors-list-container');
+            publicContainer.innerHTML = '';
+            
+            if(donorsToRender.length === 0) {
+                publicContainer.innerHTML = `<div class="text-center py-8 text-slate-500 text-sm">Tidak ada data pewakif ditemukan.</div>`;
+            } else {
+                donorsToRender.forEach(donor => {
+                    publicContainer.innerHTML += `
+                        <div class="bg-white p-4 rounded-xl border border-slate-100 shadow-sm flex justify-between items-center relative overflow-hidden">
+                            <div class="absolute left-0 top-0 bottom-0 w-1 bg-emerald-500"></div>
+                            <div class="pl-2">
+                                <p class="text-sm font-bold text-slate-800">${donor.name}</p>
+                                <p class="text-[10px] text-slate-400 mb-1">${formatDate(donor.date)}</p>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-sm font-bold text-emerald-600">${formatRupiah(donor.amount)}</p>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                // Tampilkan tombol Muat Lebih Banyak jika masih ada sisa data
+                if (hasMore) {
+                    publicContainer.innerHTML += `
+                        <div class="text-center pt-2 pb-2">
+                            <button onclick="loadMoreDonors()" class="bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-600 font-bold text-xs py-2.5 px-6 rounded-full transition-colors inline-flex items-center gap-2 shadow-sm">
+                                <i class="fa-solid fa-chevron-down"></i> Muat Lebih Banyak
+                            </button>
+                        </div>
+                    `;
+                }
+            }
         }
 
         function setupListeners() {
@@ -556,49 +634,28 @@ Namun, saat ini kita masih memiliki kewajiban pelunasan tahap akhir kepada pihak
                     document.getElementById('collected-amount').innerText = formatRupiah(data.collected);
                     document.getElementById('remaining-amount').innerText = formatRupiah(Math.max(0, remaining));
                     
-                    if (document.getElementById('vendor-remaining')) {
-                        document.getElementById('vendor-remaining').innerText = formatRupiah(Math.max(0, remaining));
-                    }
-                    
                     document.getElementById('percent-text').innerText = Math.round(percentage) + '%';
                     document.getElementById('progress-bar').style.width = percentage + '%';
                     
-                    // --- UPDATE TAMPILAN DINAMIS ---
-                    // Cek jika data tampilan ada di Firebase, jika ada tampilkan. Jika tidak, pakai yang di HTML.
                     if (data.headerTitle) {
                         document.getElementById('header-title-display').innerText = data.headerTitle;
                         if(document.getElementById('input-header-title')) document.getElementById('input-header-title').value = data.headerTitle;
-                    } else {
-                        if(document.getElementById('input-header-title')) document.getElementById('input-header-title').value = document.getElementById('header-title-display').innerText;
                     }
-
                     if (data.headerSubtitle) {
                         document.getElementById('header-subtitle-display').innerText = data.headerSubtitle;
                         if(document.getElementById('input-header-subtitle')) document.getElementById('input-header-subtitle').value = data.headerSubtitle;
-                    } else {
-                        if(document.getElementById('input-header-subtitle')) document.getElementById('input-header-subtitle').value = document.getElementById('header-subtitle-display').innerText.trim();
                     }
-
                     if (data.headerImageUrl || data.headerVideoUrl) {
                         const imgElement = document.getElementById('header-image-element');
-                        const urlToUse = data.headerImageUrl || data.headerVideoUrl; // Menampilkan URL foto, atau fallback jika masih pakai URL video lama
-                        if (imgElement.src !== urlToUse) {
-                            imgElement.src = urlToUse;
-                        }
+                        const urlToUse = data.headerImageUrl || data.headerVideoUrl;
+                        if (imgElement.src !== urlToUse) imgElement.src = urlToUse;
                         if(document.getElementById('input-header-image')) document.getElementById('input-header-image').value = urlToUse;
-                    } else {
-                        if(document.getElementById('input-header-image')) document.getElementById('input-header-image').value = document.getElementById('header-image-element').src;
                     }
-
                     if (data.programDescription) {
                         document.getElementById('program-description-display').innerText = data.programDescription;
                         if(document.getElementById('input-program-desc')) document.getElementById('input-program-desc').value = data.programDescription;
-                    } else {
-                        if(document.getElementById('input-program-desc')) document.getElementById('input-program-desc').value = document.getElementById('program-description-display').innerText;
                     }
-                    // --- END UPDATE TAMPILAN ---
 
-                    // Isi form admin dana jika elemennya ada
                     if(document.getElementById('input-target-admin')) {
                         document.getElementById('input-target-admin').value = data.target;
                         document.getElementById('input-collected-admin').value = data.collected;
@@ -608,58 +665,36 @@ Namun, saat ini kita masih memiliki kewajiban pelunasan tahap akhir kepada pihak
                         document.getElementById('last-update-text').innerText = 'Update: ' + formatDate(data.lastUpdate);
                     }
                 }
-            }, (e) => {
-                console.error("Snapshot Error:", e);
-                // Menambahkan notifikasi jika rules firebase belum diatur
-                if(e.code === 'permission-denied') {
-                    showToast("Error Firebase: Cek Rules (Aturan Keamanan) Anda!", "error");
-                    document.getElementById('last-update-text').innerText = "Akses Data Ditolak (Cek Rules)";
-                }
-            });
+            }, (e) => console.error(e));
 
-            // 2. Donors Listener
-            onSnapshot(donorsColRef, (snapshot) => {
-                const allDonors = [];
-                snapshot.forEach(doc => allDonors.push({ id: doc.id, ...doc.data() }));
-                
-                // Sort by date desc
-                allDonors.sort((a, b) => new Date(b.date) - new Date(a.date));
-
-                const approvedDonors = allDonors.filter(d => d.status === 'approved');
-                const pendingDonors = allDonors.filter(d => d.status === 'pending');
-
-                // Render Public Donors
-                const publicContainer = document.getElementById('donors-list-container');
-                publicContainer.innerHTML = '';
-                if(approvedDonors.length === 0) {
-                    publicContainer.innerHTML = `<div class="text-center py-8 text-slate-500 text-sm">Belum ada donasi terkonfirmasi.</div>`;
+            // 2A. Listener Khusus Publik (Hanya membaca 1 dokumen Katalog Indeks)
+            onSnapshot(donorsIndexRef, (docSnap) => {
+                if (docSnap.exists()) {
+                    globalApprovedDonors = docSnap.data().list || [];
+                    // Urutkan berdasarkan tanggal terbaru
+                    globalApprovedDonors.sort((a, b) => new Date(b.date) - new Date(a.date));
                 } else {
-                    approvedDonors.forEach(donor => {
-                        publicContainer.innerHTML += `
-                            <div class="bg-white p-4 rounded-xl border border-slate-100 shadow-sm flex justify-between items-center relative overflow-hidden">
-                                <div class="absolute left-0 top-0 bottom-0 w-1 bg-emerald-500"></div>
-                                <div class="pl-2">
-                                    <p class="text-sm font-bold text-slate-800">${donor.name}</p>
-                                    <p class="text-[10px] text-slate-400 mb-1">${formatDate(donor.date)}</p>
-                                </div>
-                                <div class="text-right">
-                                    <p class="text-sm font-bold text-emerald-600">${formatRupiah(donor.amount)}</p>
-                                </div>
-                            </div>
-                        `;
-                    });
+                    globalApprovedDonors = [];
                 }
+                applyDonorFilterAndRender();
+            }, (e) => console.error(e));
 
-                // Render Admin Pending Donors
+            // 2B. Listener Khusus Admin (Hanya menarik data Pending)
+            const pendingQuery = query(donorsColRef, where("status", "==", "pending"));
+            onSnapshot(pendingQuery, (snapshot) => {
+                currentPendingDonors = [];
+                snapshot.forEach(doc => currentPendingDonors.push({ id: doc.id, ...doc.data() }));
+                currentPendingDonors.sort((a, b) => new Date(b.date) - new Date(a.date));
+
                 const pendingContainer = document.getElementById('pending-list-container');
                 if(pendingContainer) {
-                    document.getElementById('pending-count').innerText = `${pendingDonors.length} Data`;
+                    document.getElementById('pending-count').innerText = `${currentPendingDonors.length} Data`;
                     pendingContainer.innerHTML = '';
                     
-                    if(pendingDonors.length === 0) {
+                    if(currentPendingDonors.length === 0) {
                         pendingContainer.innerHTML = `<p class="text-xs text-slate-400 text-center py-4">Tidak ada data pending.</p>`;
                     } else {
-                        pendingDonors.forEach(donor => {
+                        currentPendingDonors.forEach(donor => {
                             pendingContainer.innerHTML += `
                                 <div class="bg-orange-50 border border-orange-100 p-3 rounded-xl">
                                     <div class="flex justify-between items-start mb-2">
@@ -678,16 +713,43 @@ Namun, saat ini kita masih memiliki kewajiban pelunasan tahap akhir kepada pihak
                             `;
                         });
 
-                        // Attach events for admin buttons
+                        // Event Setujui: Simpan ke Indeks Katalog saat disetujui
                         document.querySelectorAll('.admin-approve-btn').forEach(btn => {
                             btn.addEventListener('click', async (e) => {
                                 const id = e.currentTarget.getAttribute('data-id');
                                 const amount = parseFloat(e.currentTarget.getAttribute('data-amount'));
+                                const btnEl = e.currentTarget;
+                                
+                                btnEl.innerText = "Memproses..."; 
+                                btnEl.disabled = true;
+
                                 try {
+                                    const donorToApprove = currentPendingDonors.find(d => d.id === id);
+                                    
+                                    // 1. Ubah status di dokumen utama
                                     await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'donors', id), { status: 'approved' });
+                                    
+                                    // 2. Tambahkan info dasar ke Katalog Indeks agar bisa dicari publik
+                                    if (donorToApprove) {
+                                        await setDoc(donorsIndexRef, {
+                                            list: arrayUnion({
+                                                id: donorToApprove.id,
+                                                name: donorToApprove.name,
+                                                amount: donorToApprove.amount,
+                                                date: donorToApprove.date
+                                            })
+                                        }, { merge: true });
+                                    }
+                                    
+                                    // 3. Tambah progres dana
                                     await updateCampaignTotal(amount);
                                     showToast("Donasi disetujui!");
-                                } catch (err) { showToast("Gagal menyetujui", "error"); }
+                                } catch (err) { 
+                                    console.error(err);
+                                    showToast("Gagal menyetujui", "error"); 
+                                    btnEl.innerText = "Setujui"; 
+                                    btnEl.disabled = false;
+                                }
                             });
                         });
 
@@ -968,6 +1030,14 @@ Namun, saat ini kita masih memiliki kewajiban pelunasan tahap akhir kepada pihak
 
         // Start 
         if (app) initAuth();
+
+        // Listener untuk fitur pencarian Donasi Masuk
+        if(document.getElementById('search-donor')) {
+            document.getElementById('search-donor').addEventListener('input', (e) => {
+                publicDonorsLimit = 50; // Reset ke 50 data setiap kali mencari nama baru
+                applyDonorFilterAndRender();
+            });
+        }
 
     </script>
 </body>
